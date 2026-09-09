@@ -1,12 +1,29 @@
 from html import escape
 
+VALID_ALIGNMENTS = {"left", "right", "center"}
+
+
+def _validate_alignment(alignment):
+    if alignment is not None and alignment not in VALID_ALIGNMENTS:
+        raise ValueError("Alignment must be 'left', 'right', or 'center'")
+    return alignment
+
 
 class Element:
-    def __init__(self, tag, content=None, css_class=None, attrs=None):
+    def __init__(self, tag, content=None, css_class=None, attrs=None, alignment=None):
         self.tag = tag
         self.content = [] if content is None else self._normalize_content(content)
         self.css_class = css_class
         self.attrs = attrs or {}
+        self.alignment = _validate_alignment(alignment)
+
+    def _render_class(self):
+        classes = []
+        if self.css_class:
+            classes.append(self.css_class)
+        if self.alignment:
+            classes.append(f"align-{self.alignment}")
+        return " ".join(classes)
 
     def _normalize_content(self, content):
         if isinstance(content, (list, tuple)):
@@ -30,8 +47,9 @@ class Element:
 
     def render(self):
         attrs = []
-        if self.css_class:
-            attrs.append(f'class="{escape(self.css_class, quote=True)}"')
+        css_class = self._render_class()
+        if css_class:
+            attrs.append(f'class="{escape(css_class, quote=True)}"')
         for key, value in self.attrs.items():
             attrs.append(f'{key}="{escape(str(value), quote=True)}"')
         attr_str = " " + " ".join(attrs) if attrs else ""
@@ -54,16 +72,21 @@ class TextNode(Element):
 
 
 class Card(Element):
-    def __init__(self, css_class=None):
-        super().__init__("div", css_class=css_class or "card")
+    def __init__(self, css_class=None, alignment=None):
+        super().__init__("div", css_class=css_class or "card", alignment=alignment)
 
 
 class Grid(Element):
-    def __init__(self, horizontal=1, vertical=1, css_class=None, content=None):
+    def __init__(self, horizontal=1, vertical=1, css_class=None, content=None, alignment=None):
         self.horizontal = max(1, int(horizontal))
         self.vertical = max(1, int(vertical))
         self.cells = {}
-        super().__init__("div", content=content, css_class=(css_class or "grid") + f" grid-{self.horizontal}x{self.vertical}")
+        super().__init__(
+            "div",
+            content=content,
+            css_class=(css_class or "grid") + f" grid-{self.horizontal}x{self.vertical}",
+            alignment=alignment,
+        )
 
     def withCell(self, row, col, content):
         if row < 0 or col < 0:
@@ -85,13 +108,20 @@ class Grid(Element):
             for col in range(self.horizontal):
                 cell_content = self.cells.get((row, col), "")
                 inner.append(f'<div class="grid-cell">{self._render_child(cell_content)}</div>')
-        return f'<div class="{escape(self.css_class, quote=True)}">{"".join(inner)}</div>'
+        style = (
+            f'grid-template-columns: repeat({self.horizontal}, minmax(0, 1fr)); '
+            f'grid-template-rows: repeat({self.vertical}, minmax(0, 1fr));'
+        )
+        return (
+            f'<div class="{escape(self._render_class(), quote=True)}" '
+            f'style="{escape(style, quote=True)}">{"".join(inner)}</div>'
+        )
 
 
 class CodeBlock(Element):
-    def __init__(self, language="python", css_class=None):
+    def __init__(self, language="python", css_class=None, alignment=None):
         self.language = language
-        super().__init__("pre", css_class=css_class or "code-block")
+        super().__init__("pre", css_class=css_class or "code-block", alignment=alignment)
         self.attrs = {"class": "language-" + language}
 
     def withContent(self, code_text):
@@ -103,28 +133,33 @@ class CodeBlock(Element):
 
     def render(self):
         code = self._render_child(self.content[0]) if self.content else ""
-        return f'<pre><code class="language-{escape(self.language, quote=True)}">{code}</code></pre>'
+        class_attr = f' class="{escape(self._render_class(), quote=True)}"' if self.alignment else ""
+        return (
+            f'<pre{class_attr}>'
+            f'<code class="language-{escape(self.language, quote=True)}">{code}</code></pre>'
+        )
 
 
 class Image(Element):
-    def __init__(self, src, alt="", css_class=None):
+    def __init__(self, src, alt="", css_class=None, alignment=None):
         self.src = src
         self.alt = alt
-        super().__init__("img", css_class=css_class or "image")
+        super().__init__("img", css_class=css_class or "image", alignment=alignment)
         self.attrs = {"src": src, "alt": alt}
 
     def render(self):
         attrs = [f'src="{escape(str(self.src), quote=True)}"', f'alt="{escape(str(self.alt), quote=True)}"']
-        if self.css_class:
-            attrs.append(f'class="{escape(self.css_class, quote=True)}"')
+        css_class = self._render_class()
+        if css_class:
+            attrs.append(f'class="{escape(css_class, quote=True)}"')
         return f'<img {" ".join(attrs)} />'
 
 
 class Table(Element):
-    def __init__(self, headers=None, rows=None, css_class=None):
+    def __init__(self, headers=None, rows=None, css_class=None, alignment=None):
         self.headers = headers or []
         self.rows = rows or []
-        super().__init__("table", css_class=css_class or "table")
+        super().__init__("table", css_class=css_class or "table", alignment=alignment)
 
     def render(self):
         header_html = ""
@@ -136,48 +171,48 @@ class Table(Element):
             cells = "".join(f"<td>{escape(str(cell), quote=False)}</td>" for cell in row)
             row_html += f"<tr>{cells}</tr>"
 
-        return f'<table class="{escape(self.css_class, quote=True)}">{header_html}{row_html}</table>'
+        return f'<table class="{escape(self._render_class(), quote=True)}">{header_html}{row_html}</table>'
 
 
-def h(text, level=1):
+def h(text, level=1, alignment=None):
     if not 1 <= int(level) <= 6:
         raise ValueError("Heading level must be between 1 and 6")
-    return Element(f"h{int(level)}", content=text)
+    return Element(f"h{int(level)}", content=text, alignment=alignment)
 
 
-def b(*content):
-    return Element("strong", content=list(content) if content else [""])
+def b(*content, alignment=None):
+    return Element("strong", content=list(content) if content else [""], alignment=alignment)
 
 
-def i(*content):
-    return Element("em", content=list(content) if content else [""])
+def i(*content, alignment=None):
+    return Element("em", content=list(content) if content else [""], alignment=alignment)
 
 
-def code(*content):
-    return Element("code", content=list(content) if content else [""])
+def code(*content, alignment=None):
+    return Element("code", content=list(content) if content else [""], alignment=alignment)
 
 
-def link(display, url):
-    return Element("a", content=display, attrs={"href": url})
+def link(display, url, alignment=None):
+    return Element("a", content=display, attrs={"href": url}, alignment=alignment)
 
 
-def p(*content):
-    return Element("p", content=list(content) if content else [""])
+def p(*content, alignment=None):
+    return Element("p", content=list(content) if content else [""], alignment=alignment)
 
 
-def img(src, alt="", css_class=None):
-    return Image(src, alt=alt, css_class=css_class)
+def img(src, alt="", css_class=None, alignment=None):
+    return Image(src, alt=alt, css_class=css_class, alignment=alignment)
 
 
-def ul(items):
+def ul(items, alignment=None):
     if items is None:
-        return Element("ul", content=[])
+        return Element("ul", content=[], alignment=alignment)
     values = list(items)
-    return Element("ul", content=[Element("li", content=str(v)) for v in values])
+    return Element("ul", content=[Element("li", content=str(v)) for v in values], alignment=alignment)
 
 
-def ol(items):
+def ol(items, alignment=None):
     if items is None:
-        return Element("ol", content=[])
+        return Element("ol", content=[], alignment=alignment)
     values = list(items)
-    return Element("ol", content=[Element("li", content=str(v)) for v in values])
+    return Element("ol", content=[Element("li", content=str(v)) for v in values], alignment=alignment)

@@ -17,7 +17,7 @@ presentation = (
     )
     .withSlide(
         Slide().withContent(
-            h("Agenda", 2),
+            h("Agenda", 2, alignment="center"),
             ul(["Build slides declaratively", "Compose layout blocks", "Render clean HTML"]),
             p("This deck mixes text, code, cards, and tables.")
         )

@@ -1,3 +1,5 @@
+import pytest
+
 from html_presentations import (
     Card,
     CodeBlock,
@@ -57,7 +59,7 @@ def test_grid_and_card_rendering():
         .to_html()
     )
 
-    assert "<div class=\"grid grid-2x2\"" in html
+    assert '<div class="grid grid-2x2" style="grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr));">' in html
     assert "<div class=\"card\">" in html
     assert "<p>First</p>" in html
     assert "<pre><code class=\"language-python\">print('x')</code></pre>" in html
@@ -148,3 +150,31 @@ def test_inline_helpers_accept_nested_content():
 
     assert "Start <strong>bold</strong> and <em>italic</em>" in html
     assert '<a href="https://example.com">docs</a>' in html
+
+
+def test_alignment_is_supported_by_helpers_and_containers():
+    html = (
+        Presentation()
+        .withSlide(
+            Slide(alignment="center").withContent(
+                h("Centered", alignment="center"),
+                p("Right aligned", alignment="right"),
+                Card(alignment="left").withContent("Card"),
+                Grid(2, 2, alignment="center"),
+                img("/image.png", alignment="right"),
+            )
+        )
+        .to_html()
+    )
+
+    assert '<section class="slide align-center">' in html
+    assert '<h1 class="align-center">Centered</h1>' in html
+    assert '<p class="align-right">Right aligned</p>' in html
+    assert '<div class="card align-left">Card</div>' in html
+    assert 'class="grid grid-2x2 align-center"' in html
+    assert 'class="image align-right"' in html
+
+
+def test_alignment_rejects_unknown_values():
+    with pytest.raises(ValueError, match="Alignment must be"):
+        p("Invalid", alignment="justify")

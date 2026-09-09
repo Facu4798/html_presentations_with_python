@@ -101,6 +101,11 @@ def render_document(presentation):
       border: 1px solid var(--border);
     }
     a { color: var(--accent); }
+    .align-left { text-align: left; }
+    .align-center { text-align: center; }
+    .align-right { text-align: right; }
+    img.image.align-center { margin-left: auto; margin-right: auto; }
+    img.image.align-right { margin-left: auto; margin-right: 0; }
     @media (max-width: 640px) {
       .slide {
         padding: 32px 20px;
