@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+html_presentations/__init__.py
+html_presentations/elements.py
+html_presentations/presentation.py
+html_presentations/render.py
+html_presentations/slide.py
+html_presentations_with_python.egg-info/PKG-INFO
+html_presentations_with_python.egg-info/SOURCES.txt
+html_presentations_with_python.egg-info/dependency_links.txt
+html_presentations_with_python.egg-info/top_level.txt
+tests/test_html_presentations.py

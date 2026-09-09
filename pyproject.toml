@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "html-presentations-with-python"
+version = "0.1.0"
+description = "A Python DSL for building HTML presentations"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools]
+packages = ["html_presentations"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

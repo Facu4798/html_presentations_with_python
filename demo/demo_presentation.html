@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Presentation</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --border: #dfe7f5;
+      --accent: #2563eb;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+    }
+    .deck {
+      display: flex;
+      flex-direction: row;
+      width: 100vw;
+      height: 100vh;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .deck::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      flex: 0 0 100vw;
+      width: 100vw;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: 48px;
+      scroll-snap-align: start;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .grid-cell {
+      border: 1px solid var(--border);
+      padding: 16px;
+      background: var(--panel);
+      border-radius: 8px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--panel);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .table th, .table td {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .table th {
+      background: #eef4ff;
+    }
+    .code-block {
+      background: #111827;
+      color: #f9fafb;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    img.image {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    a { color: var(--accent); }
+    @media (max-width: 640px) {
+      .slide {
+        padding: 32px 20px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+:root {
+  --bg: #f4f6fb;
+  --panel: #ffffff;
+  --ink: #1f2937;
+  --muted: #6b7280;
+  --border: #dfe7f5;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --shadow: rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.slide {
+  padding: 56px 64px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.title-slide {
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 35%),
+              linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: 3.1rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2.4rem;
+  margin-bottom: 0.8rem;
+}
+
+h3 {
+  font-size: 1.8rem;
+}
+
+h4 {
+  font-size: 1.4rem;
+}
+
+p {
+  margin: 0.7rem 0;
+  color: var(--ink);
+}
+
+strong {
+  font-weight: 700;
+}
+
+em {
+  font-style: italic;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 1rem;
+}
+
+.grid-cell {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 12px;
+  box-shadow: 0 6px 18px var(--shadow);
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 18px;
+  height: 100%;
+  box-shadow: 0 6px 18px var(--shadow);
+}
+
+.code-block {
+  background: #111827;
+  color: #f9fafb;
+  padding: 18px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+pre {
+  margin: 0;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+img.image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  margin: 1rem 0;
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: var(--panel);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 18px var(--shadow);
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.table th {
+  background: #eef4ff;
+  font-weight: 700;
+}
+
+ul, ol {
+  margin: 0.8rem 0 0.8rem 1.4rem;
+  padding: 0;
+}
+
+li {
+  margin: 0.35rem 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+  <div class="deck">
+    <section class="slide title-slide"><h1>Python-Powered Presentation Demo</h1><p>A lightweight HTML slide deck built with Python.</p><strong>Fluent API</strong> <em>and reusable components</em><p><a href="https://example.com">Open docs</a></p></section><section class="slide"><h2>Agenda</h2><ul><li>Build slides declaratively</li><li>Compose layout blocks</li><li>Render clean HTML</li></ul><p>This deck mixes text, code, cards, and tables.</p></section><section class="slide"><h2>Layout Example</h2><div class="grid grid-2x2"><div class="grid-cell"><div class="card"><h4>One</h4><p>Alpha</p></div></div><div class="grid-cell"><div class="card"><h4>Two</h4><p>Beta</p></div></div><div class="grid-cell"><div class="card"><h4>Three</h4><p>Gamma</p></div></div><div class="grid-cell"><pre><code class="language-python">print('hello from slides')</code></pre></div></div></section><section class="slide"><h2>Table + Image</h2><img src="https://placehold.co/600x200/png" alt="Example graphic" class="image" /><table class="table"><tr><th>Feature</th><th>Status</th></tr><tr><td>Text helpers</td><td>OK</td></tr><tr><td>Grid layout</td><td>OK</td></tr><tr><td>Code blocks</td><td>OK</td></tr></table></section>
+  </div>
+  
+    <script>
+      const deck = document.querySelector('.deck');
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let currentIndex = 0;
+      let touchStartX = 0;
+
+      function getCurrentIndex() {
+        if (!deck || !slides.length) return 0;
+        const slideWidth = slides[0].offsetWidth || window.innerWidth;
+        return Math.max(0, Math.min(slides.length - 1, Math.round(deck.scrollLeft / slideWidth)));
+      }
+
+      function scrollToSlide(index) {
+        if (!deck || !slides.length) return;
+        const safeIndex = Math.max(0, Math.min(index, slides.length - 1));
+        currentIndex = safeIndex;
+        deck.scrollTo({ left: slides[safeIndex].offsetLeft, behavior: 'smooth' });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        const activeIndex = getCurrentIndex();
+        if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+          event.preventDefault();
+          scrollToSlide(activeIndex + 1);
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          event.preventDefault();
+          scrollToSlide(activeIndex - 1);
+        }
+      });
+
+      deck.addEventListener('touchstart', function(event) {
+        touchStartX = event.touches[0].clientX;
+      }, { passive: true });
+
+      deck.addEventListener('touchend', function(event) {
+        const touchEndX = event.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+          const activeIndex = getCurrentIndex();
+          scrollToSlide(activeIndex + (diff > 0 ? 1 : -1));
+        }
+      }, { passive: true });
+
+      deck.addEventListener('scroll', function() {
+        currentIndex = getCurrentIndex();
+      }, { passive: true });
+    </script>
+    
+</body>
+</html>
