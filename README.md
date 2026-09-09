@@ -2,6 +2,8 @@
 
 A lightweight Python DSL for building HTML presentations.
 
+See the [User Guide](USER_GUIDE.md) for the complete public API reference and usage examples.
+
 ## Install
 
 Install from a local checkout:
