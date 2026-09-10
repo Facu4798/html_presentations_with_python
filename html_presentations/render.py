@@ -49,9 +49,10 @@ def render_document(presentation):
     .slide {
       flex: 0 0 100vw;
       width: 100vw;
-      min-height: 100vh;
+      height: 100vh;
       box-sizing: border-box;
       padding: 48px;
+      overflow: hidden;
       scroll-snap-align: start;
       background: linear-gradient(180deg, #ffffff, #f8fafc);
     }

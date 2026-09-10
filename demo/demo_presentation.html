@@ -38,9 +38,10 @@
     .slide {
       flex: 0 0 100vw;
       width: 100vw;
-      min-height: 100vh;
+      height: 100vh;
       box-sizing: border-box;
       padding: 48px;
+      overflow: hidden;
       scroll-snap-align: start;
       background: linear-gradient(180deg, #ffffff, #f8fafc);
     }
@@ -140,7 +141,7 @@ body {
 
 .slide {
   padding: clamp(2rem, 4vw, 4rem);
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(248,250,255,0.95) 100%);
   border-left: 1px solid rgba(148, 163, 184, 0.18);
   border-right: 1px solid rgba(148, 163, 184, 0.18);
@@ -375,5 +376,6 @@ a:hover {
       }, { passive: true });
     </script>
     
+  
 </body>
 </html>

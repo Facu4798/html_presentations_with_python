@@ -112,6 +112,8 @@ def test_default_css_theme_is_included():
     assert ".slide" in html
     assert ".card" in html
     assert ".grid" in html
+    assert "height: 100vh" in html
+    assert "overflow: hidden" in html
 
 
 def test_horizontal_slide_navigation_and_mobile_scroll_support():
