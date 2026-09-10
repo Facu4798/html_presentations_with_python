@@ -9,14 +9,18 @@ See the [User Guide](USER_GUIDE.md) for the complete public API reference and us
 Install from a local checkout:
 
 ```bash
-python -m pip install https://github.com/Facu4798/html_presentations_with_python
+python -m pip install "git+https://github.com/Facu4798/html_presentations_with_python.git"
 ```
 
-For development, install the repository in editable mode:
+For development, clone the repository and install it in editable mode:
 
 ```bash
-python -m pip install -e https://github.com/Facu4798/html_presentations_with_python
+git clone https://github.com/Facu4798/html_presentations_with_python.git
+cd html_presentations_with_python
+python -m pip install -e .
 ```
+
+The plain GitHub webpage URL cannot be passed directly to `pip`; it downloads an HTML page rather than a Python package archive. The `git+https://` prefix tells `pip` to install from the Git repository.
 
 ## Quick Start
 
