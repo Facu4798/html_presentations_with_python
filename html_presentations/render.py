@@ -104,7 +104,7 @@ def render_document(presentation):
     }
     a { color: var(--accent); }
     .align-left { text-align: left; }
-    .align-center { text-align: center; }
+    .align-center { align-self: center; }
     .align-right { text-align: right; }
     img.image.align-center { margin-left: auto; margin-right: auto; }
     img.image.align-right { margin-left: auto; margin-right: 0; }
