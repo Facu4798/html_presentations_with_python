@@ -1,6 +1,6 @@
 from .presentation import Presentation
 from .slide import Slide
-from .elements import Card, CodeBlock, Grid, Image, Table, b, code, h, i, img, link, ol, p, ul
+from .elements import Card, CodeBlock, Grid, Image, Table, b, code, h, html, i, img, link, ol, p, ul
 
 __all__ = [
     "Presentation",
@@ -11,6 +11,7 @@ __all__ = [
     "Image",
     "Table",
     "h",
+    "html",
     "b",
     "i",
     "code",

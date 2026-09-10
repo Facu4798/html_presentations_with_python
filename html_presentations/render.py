@@ -13,6 +13,7 @@ def render_node(node):
 
 def render_document(presentation):
     slides_html = "".join(render_node(slide) for slide in presentation.slides)
+    custom_scripts = "".join(f"\n  <script>\n{script}\n  </script>" for script in presentation.scripts)
 
     default_style = """
     :root {
@@ -190,6 +191,7 @@ def render_document(presentation):
     {slides_html}
   </div>
   {script}
+  {custom_scripts}
 </body>
 </html>
 """

@@ -11,6 +11,7 @@ from html_presentations import (
     b,
     code,
     h,
+    html,
     i,
     img,
     link,
@@ -178,3 +179,26 @@ def test_alignment_is_supported_by_helpers_and_containers():
 def test_alignment_rejects_unknown_values():
     with pytest.raises(ValueError, match="Alignment must be"):
         p("Invalid", alignment="justify")
+
+
+def test_html_helper_accepts_raw_html_and_file_paths(tmp_path):
+    html_file = tmp_path / "fragment.html"
+    html_file.write_text('<aside class="from-file">File content</aside>', encoding="utf-8")
+
+    rendered = Presentation().withSlide(
+        Slide().withContent(html("<div class=\"raw\">Raw content</div>", html_file))
+    ).to_html()
+
+    assert '<div class="raw">Raw content</div>' in rendered
+    assert '<aside class="from-file">File content</aside>' in rendered
+
+
+def test_add_script_accepts_mixed_raw_code_and_file_paths(tmp_path):
+    script_file = tmp_path / "custom.js"
+    script_file.write_text("window.fromFile = true;", encoding="utf-8")
+
+    rendered = Presentation().addScript("window.fromRaw = true;", script_file).to_html()
+
+    assert "window.fromRaw = true;" in rendered
+    assert "window.fromFile = true;" in rendered
+    assert rendered.count("<script>") >= 3

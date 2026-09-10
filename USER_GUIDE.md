@@ -116,6 +116,17 @@ Writes the generated HTML to `filename` and returns the filename.
 presentation.save("build/my_deck.html")
 ```
 
+#### `addScript(*scripts)`
+
+Adds custom JavaScript to the generated document and returns the presentation for chaining. Each argument can be either JavaScript source as a string or a path to a JavaScript file. You can mix both forms in the same call. The source is automatically wrapped in a `<script>` element, so do not include the wrapper tags yourself.
+
+```python
+presentation.addScript(
+    "document.body.classList.add('ready');",
+    "scripts/analytics.js",
+)
+```
+
 ## Slide
 
 `Slide` is a single slide in the deck.
@@ -300,6 +311,21 @@ Creates a heading. `level` must be from 1 through 6.
 h("Main title", 1)
 h("Section title", 2, alignment="center")
 ```
+
+### `html(*content)`
+
+Adds custom HTML without escaping it. Each argument can be raw HTML or a path to an HTML fragment file. Multiple raw strings and file paths can be mixed in one call.
+
+```python
+from html_presentations import html
+
+custom_content = html(
+    '<div class="notice">Inline content</div>',
+    "fragments/notice.html",
+)
+```
+
+Use custom HTML only with content you trust, because it is inserted into the document as provided.
 
 ### `p(*content, alignment=None)`
 

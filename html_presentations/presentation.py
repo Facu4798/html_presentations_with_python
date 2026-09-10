@@ -1,3 +1,4 @@
+from .elements import _read_raw_or_file
 from .render import render_document
 
 
@@ -6,6 +7,7 @@ class Presentation:
         self.css_file = css_file
         self.title = title
         self.slides = []
+        self.scripts = []
 
     def withSlide(self, slide):
         self.slides.append(slide)
@@ -19,6 +21,10 @@ class Presentation:
 
     def addSlide(self, slide):
         return self.withSlide(slide)
+
+    def addScript(self, *scripts):
+        self.scripts.extend(_read_raw_or_file(script) for script in scripts)
+        return self
 
     def to_html(self):
         return render_document(self)

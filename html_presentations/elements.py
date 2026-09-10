@@ -1,4 +1,6 @@
 from html import escape
+from os import PathLike, fspath
+from pathlib import Path
 
 VALID_ALIGNMENTS = {"left", "right", "center"}
 
@@ -7,6 +9,15 @@ def _validate_alignment(alignment):
     if alignment is not None and alignment not in VALID_ALIGNMENTS:
         raise ValueError("Alignment must be 'left', 'right', or 'center'")
     return alignment
+
+
+def _read_raw_or_file(value):
+    if isinstance(value, PathLike):
+        path = Path(value)
+        return path.read_text(encoding="utf-8")
+    if isinstance(value, str) and Path(value).is_file():
+        return Path(value).read_text(encoding="utf-8")
+    return fspath(value) if isinstance(value, PathLike) else str(value)
 
 
 class Element:
@@ -69,6 +80,14 @@ class Element:
 class TextNode(Element):
     def __init__(self, tag, text):
         super().__init__(tag, content=text)
+
+
+class RawHTML(Element):
+    def __init__(self, content):
+        self.raw_content = content
+
+    def render(self):
+        return self.raw_content
 
 
 class Card(Element):
@@ -178,6 +197,10 @@ def h(text, level=1, alignment=None):
     if not 1 <= int(level) <= 6:
         raise ValueError("Heading level must be between 1 and 6")
     return Element(f"h{int(level)}", content=text, alignment=alignment)
+
+
+def html(*content):
+    return RawHTML("".join(_read_raw_or_file(item) for item in content))
 
 
 def b(*content, alignment=None):
