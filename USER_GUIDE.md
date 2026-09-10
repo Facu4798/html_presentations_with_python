@@ -9,13 +9,13 @@ This guide describes the public API and the normal workflow for creating present
 From a local checkout:
 
 ```bash
-python -m pip install .
+python -m pip install https://github.com/Facu4798/html_presentations_with_python
 ```
 
 For development, use editable mode:
 
 ```bash
-python -m pip install -e .
+python -m pip install -e https://github.com/Facu4798/html_presentations_with_python
 ```
 
 Import the package with:
