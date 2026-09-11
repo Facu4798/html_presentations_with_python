@@ -63,6 +63,10 @@
       background: var(--panel);
       box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
     }
+    .plot-container {
+      width: 100%;
+      min-height: 240px;
+    }
     .table {
       width: 100%;
       border-collapse: collapse;
@@ -93,7 +97,7 @@
     }
     a { color: var(--accent); }
     .align-left { text-align: left; }
-    .align-center { text-align: center; }
+    .align-center { align-self: center; }
     .align-right { text-align: right; }
     img.image.align-center { margin-left: auto; margin-right: auto; }
     img.image.align-right { margin-left: auto; margin-right: 0; }
@@ -324,7 +328,7 @@ a:hover {
 </head>
 <body>
   <div class="deck">
-    <section class="slide title-slide"><h1>Python-Powered Presentation Demo</h1><p>A lightweight HTML slide deck built with Python.</p><strong>Fluent API</strong> <em>and reusable components</em><p><a href="https://example.com">Open docs</a></p></section><section class="slide"><h2 class="align-center">Agenda</h2><ul><li>Build slides declaratively</li><li>Compose layout blocks</li><li>Render clean HTML</li></ul><p>This deck mixes text, code, cards, and tables.</p></section><section class="slide"><h2>Layout Example</h2><div class="grid grid-2x2" style="grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr));"><div class="grid-cell"><div class="card"><h4>One</h4><p>Alpha</p></div></div><div class="grid-cell"><div class="card"><h4>Two</h4><p>Beta</p></div></div><div class="grid-cell"><div class="card"><h4>Three</h4><p>Gamma</p></div></div><div class="grid-cell"><pre><code class="language-python">print('hello from slides')</code></pre></div></div></section><section class="slide"><h2>Table + Image</h2><img src="https://placehold.co/600x200/png" alt="Example graphic" class="image" /><table class="table"><tr><th>Feature</th><th>Status</th></tr><tr><td>Text helpers</td><td>OK</td></tr><tr><td>Grid layout</td><td>OK</td></tr><tr><td>Code blocks</td><td>OK</td></tr></table></section>
+    <section class="slide title-slide"><h1>Python-Powered Presentation Demo</h1><p>A lightweight HTML slide deck built with Python.</p><strong>Fluent API</strong> <em>and reusable components</em><p><a href="https://example.com">Open docs</a></p></section><section class="slide"><h2 class="align-center">Agenda</h2><ul><li>Build slides declaratively</li><li>Compose layout blocks</li><li>Render clean HTML</li></ul><p>This deck mixes text, code, cards, and tables.</p></section><section class="slide"><h2>Layout Example</h2><div class="grid grid-2x2" style="grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr));"><div class="grid-cell"><div class="card"><h4>One</h4><p>Alpha</p></div></div><div class="grid-cell"><div class="card"><h4>Two</h4><p>Beta</p></div></div><div class="grid-cell"><div class="card"><h4>Three</h4><p>Gamma</p></div></div><div class="grid-cell"><pre><code class="language-python">print('hello from slides')</code></pre></div></div></section><section class="slide"><h2>Table + Image</h2><img src="https://placehold.co/600x200/png" alt="Example graphic" class="image" /><table class="table"><tr><th>Feature</th><th>Status</th></tr><tr><td>Text helpers</td><td>OK</td></tr><tr><td>Grid layout</td><td>OK</td></tr><tr><td>Code blocks</td><td>OK</td></tr></table></section><section class="slide"><h2>Plotly Example</h2><p>A line plot rendered from Python data with a reference line.</p><div id="plot-1" class="plot-container" style="height:360px"></div><script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script><script>Plotly.newPlot("plot-1", {"data":[{"y":[12,18,15,24,28],"type":"scatter","mode":"lines+markers"}],"layout":{"shapes":[{"type":"line","x0":3,"x1":3,"y0":0,"y1":1,"yref":"paper"}],"title":"Weekly values"},"config":{}}.data, {"data":[{"y":[12,18,15,24,28],"type":"scatter","mode":"lines+markers"}],"layout":{"shapes":[{"type":"line","x0":3,"x1":3,"y0":0,"y1":1,"yref":"paper"}],"title":"Weekly values"},"config":{}}.layout, {"data":[{"y":[12,18,15,24,28],"type":"scatter","mode":"lines+markers"}],"layout":{"shapes":[{"type":"line","x0":3,"x1":3,"y0":0,"y1":1,"yref":"paper"}],"title":"Weekly values"},"config":{}}.config);</script></section>
   </div>
   
     <script>

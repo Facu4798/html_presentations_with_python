@@ -56,22 +56,225 @@ Open `presentation.html` in a browser. Slides are arranged horizontally. You can
 
 ## Infographics
 
-Use `Infographic` when content should be organized into named pages instead of slides. Page names appear in a menu, and selecting a name displays that page.
+Use `Infographic` when content should be organized into named pages instead of slides. An infographic has one shared navigation menu and a set of pages. Each page name appears as a menu button, and selecting a button displays that page without leaving the document.
+
+Unlike `Presentation`, an infographic does not contain `Slide` objects. It contains `Page` objects and uses page selection rather than horizontal slide scrolling.
+
+### Imports
+
+Import the infographic and page containers from the package root. Import visual element classes from `html_presentations.elements` and helper functions from `html_presentations.functions`.
 
 ```python
 from html_presentations import Infographic, Page
-from html_presentations.functions import h, p
-
-infographic = (
-    Infographic(title="Project Overview", menu_orientation="vertical")
-    .withPage(Page("Summary").withContent(h("Summary", 1), p("Key findings.")))
-    .withPage(Page("Details").withContent(h("Details", 1), p("Supporting information.")))
-)
-
-infographic.save("infographic.html")
+from html_presentations.elements import Card, Grid, Table
+from html_presentations.functions import h, p, ul
 ```
 
-Set `menu_orientation` to `"horizontal"` or `"vertical"`. It defaults to `"horizontal"`. `orientation` is also accepted as an alias.
+### Infographic constructor
+
+```python
+Infographic(
+    css_file=None,
+    title="Infographic",
+    menu_orientation="horizontal",
+    orientation=None,
+)
+```
+
+- `css_file`: Optional path to a CSS file. Its contents are appended to the built-in infographic styles.
+- `title`: Text used in the generated HTML `<title>` element.
+- `menu_orientation`: Menu direction. It must be either `"horizontal"` or `"vertical"` and defaults to `"horizontal"`.
+- `orientation`: Alias for `menu_orientation`. If provided, it takes precedence over `menu_orientation`.
+
+An invalid orientation raises `ValueError`:
+
+```python
+Infographic(menu_orientation="diagonal")  # raises ValueError
+```
+
+The horizontal menu is placed above the page content. The vertical menu is placed beside the page content. The menu buttons are styled as a navigation bar and the active page is highlighted.
+
+### Adding pages
+
+#### `withPage(page)`
+
+Adds a `Page` to the infographic and returns the same infographic for method chaining.
+
+```python
+infographic = (
+    Infographic(title="Project Overview")
+    .withPage(Page("Summary").withContent(h("Summary", 1)))
+    .withPage(Page("Details").withContent(h("Details", 1)))
+)
+```
+
+#### `page(page)`
+
+Alias for `withPage`.
+
+```python
+infographic.page(Page("Results").withContent(p("Results are ready.")))
+```
+
+#### `add_page(page)` and `addPage(page)`
+
+Additional aliases for `withPage`.
+
+```python
+infographic.add_page(Page("Appendix").withContent(p("Additional context.")))
+infographic.addPage(Page("Sources").withContent(p("References and links.")))
+```
+
+### Page
+
+`Page` is a named content container used by an infographic.
+
+```python
+Page(name, css_class=None, id=None)
+```
+
+- `name`: Text shown in the navigation menu. It is converted to a string.
+- `css_class`: Optional CSS class added to the rendered page section.
+- `id`: Optional HTML ID used as the page's menu target.
+
+If `id` is omitted, the renderer generates an ID such as `page-0`, `page-1`, or `page-2` based on the page position. Explicit IDs are useful when custom CSS or custom JavaScript needs stable, meaningful selectors.
+
+```python
+Page(
+    "Highlights",
+    css_class="highlights-page",
+    id="highlights",
+).withContent(
+    h("What changed", 1),
+    p("The latest release improved the core workflow."),
+)
+```
+
+#### `withContent(*content)`
+
+Adds one or more content items to the page and returns the page for chaining. Content can be text, helper-generated elements, element classes, grids, cards, tables, images, plots, or any object with a `render()` method.
+
+```python
+page = Page("Overview").withContent(
+    h("Product overview", 1),
+    p("A short summary of the project."),
+    Grid(2, 1)
+    .withCell(0, 0, Card().withContent(h("Fast", 3), p("Quick to build.")))
+    .withCell(0, 1, Card().withContent(h("Flexible", 3), p("Easy to extend."))),
+)
+```
+
+`None` content items are ignored. Strings are rendered as escaped text.
+
+#### `addContent(*content)` and `add(*content)`
+
+Aliases for `withContent`.
+
+```python
+page = Page("Notes").addContent(p("First note."))
+page.add(p("Second note."))
+```
+
+### Navigation behavior
+
+- The first page is active when the infographic opens.
+- Only the active page is displayed.
+- Clicking a menu button activates its page and updates the selected button.
+- Page names are escaped before being placed in the menu.
+- Page IDs and menu targets are escaped and matched through `data-page-id` and `data-page-target` attributes.
+- An infographic with no pages still renders a valid document, but its menu and page content are empty.
+
+The built-in navigation script is included automatically. You do not need to add JavaScript just to switch pages.
+
+### Custom CSS and JavaScript
+
+Infographics accept the same customization pattern as presentations. Pass a CSS path when constructing the infographic, and add JavaScript with `addScript`.
+
+```python
+infographic = (
+    Infographic(
+        css_file="theme.css",
+        menu_orientation="vertical",
+    )
+    .withPage(Page("Overview").withContent(h("Overview", 1)))
+    .addScript(
+        "document.body.classList.add('loaded');",
+        "scripts/analytics.js",
+    )
+)
+```
+
+Each `addScript` argument can be inline JavaScript or a path to a JavaScript file. The source is wrapped in a `<script>` element automatically, so do not include wrapper tags yourself. Custom scripts are emitted after the built-in page navigation script.
+
+Useful built-in selectors include `.infographic`, `.infographic.horizontal`, `.infographic.vertical`, `.infographic-menu`, `.page-link`, `.page-link.active`, `.infographic-content`, and `.page`. A custom page class is available through `Page(css_class="...")`.
+
+### Rendering and saving
+
+#### `to_html()`
+
+Returns the complete infographic as an HTML string.
+
+```python
+html = infographic.to_html()
+```
+
+#### `render()`
+
+Alias for `to_html()`.
+
+```python
+html = infographic.render()
+```
+
+#### `save(filename="infographic.html")`
+
+Writes the generated HTML to `filename` and returns the filename.
+
+```python
+infographic.save("build/project_overview.html")
+```
+
+### Complete infographic example
+
+```python
+from html_presentations import Infographic, Page
+from html_presentations.elements import Card, Grid, Table
+from html_presentations.functions import h, p, ul
+
+infographic = (
+    Infographic(
+        css_file="infographic.css",
+        title="Product Overview",
+        menu_orientation="vertical",
+    )
+    .withPage(
+        Page("Overview", id="overview").withContent(
+            h("Product Overview", 1),
+            p("A concise summary of the latest release."),
+            Grid(2, 1)
+            .withCell(0, 0, Card().withContent(h("24", 2), p("features shipped")))
+            .withCell(0, 1, Card().withContent(h("91%", 2), p("weekly adoption"))),
+        )
+    )
+    .withPage(
+        Page("Highlights", id="highlights").withContent(
+            h("Highlights", 1),
+            ul(["Faster loading", "Clearer navigation", "Simpler sharing"]),
+        )
+    )
+    .withPage(
+        Page("Details", id="details").withContent(
+            h("Release details", 1),
+            Table(
+                headers=["Area", "Status"],
+                rows=[["Performance", "Improved"], ["Sharing", "New"]],
+            ),
+        )
+    )
+)
+
+infographic.save("product_overview.html")
+```
 
 ## Presentation
 
@@ -319,6 +522,92 @@ Table(
     ],
 )
 ```
+
+## Plots
+
+Plotly charts are provided as content elements. Import plot classes from `html_presentations.plots`:
+
+```python
+from html_presentations.plots import Bar, Box, Hist, Line, Pie
+```
+
+The available classes are:
+
+- `Line`: line chart with markers.
+- `Bar`: bar chart.
+- `Box`: box-and-whisker plot.
+- `Hist`: histogram.
+- `Pie`: pie chart.
+
+### Input data
+
+Plots accept lists and dictionaries. A list becomes Y-axis data:
+
+```python
+Line([12, 18, 15, 24, 28])
+```
+
+A dictionary of scalar values uses its keys as X-axis values:
+
+```python
+Line({"Jan": 12, "Feb": 18, "Mar": 15})
+```
+
+A dictionary whose values are sequences creates multiple line series. The dictionary keys become the series names:
+
+```python
+Line({
+    "Revenue": [10, 14, 18, 22],
+    "Costs": [8, 11, 13, 15],
+})
+```
+
+Pandas DataFrames are also supported. Each column becomes a line series; the DataFrame index is currently ignored:
+
+```python
+import pandas as pd
+
+data = pd.DataFrame({
+    "Revenue": [10, 14, 18, 22],
+    "Costs": [8, 11, 13, 15],
+})
+
+Line(data)
+```
+
+`Pie` expects a dictionary mapping labels to values:
+
+```python
+Pie({"Python": 60, "JavaScript": 40})
+```
+
+### Plot methods
+
+Plot classes can be configured fluently:
+
+```python
+Line([12, 18, 15, 24, 28]) \
+    .addVLine(3) \
+    .addHLine(20) \
+    .setTitle("Weekly values") \
+    .setLabels(x="Week", y="Value")
+```
+
+- `addVLine(value, **kwargs)`: Adds a vertical reference line.
+- `addHLine(value, **kwargs)`: Adds a horizontal reference line.
+- `setTitle(title)`: Sets the chart title.
+- `setLabels(x=None, y=None)`: Sets the X and Y axis titles.
+
+Plots render inside a `.plot-container` element and can be styled through the same CSS file passed to `Presentation`:
+
+```css
+.plot-container {
+    background: white;
+    border-radius: 8px;
+}
+```
+
+Plotly is loaded from `https://cdn.plot.ly/plotly-2.35.2.min.js` in the generated HTML. The browser therefore needs internet access to display charts.
 
 ## Helper Functions
 

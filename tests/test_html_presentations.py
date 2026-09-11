@@ -20,6 +20,7 @@ from html_presentations.functions import (
     p,
     ul,
 )
+from html_presentations.plots import Bar, Box, Hist, Line, Pie
 
 
 def test_paragraph_helper_and_slide_content_render():
@@ -205,6 +206,32 @@ def test_add_script_accepts_mixed_raw_code_and_file_paths(tmp_path):
     assert "window.fromRaw = true;" in rendered
     assert "window.fromFile = true;" in rendered
     assert rendered.count("<script>") >= 3
+
+
+def test_plot_classes_render_plotly_and_fluent_guides():
+    plot = Line({"Jan": [1, 2], "Feb": [2, 4]}).addVLine(10).addHLine(3).setTitle("Trend")
+
+    rendered = Presentation().withSlide(Slide().withContent(plot)).to_html()
+
+    assert 'class="plot-container"' in rendered
+    assert "plotly-2.35.2.min.js" in rendered
+    assert "Plotly.newPlot" in rendered
+    assert '"type":"line"' in rendered
+    assert '"x0":10' in rendered
+    assert '"y0":3' in rendered
+    assert '"title":"Trend"' in rendered
+
+
+def test_plot_classes_accept_common_data_shapes():
+    class DataFrameLike:
+        def to_dict(self, orient):
+            assert orient == "list"
+            return {"score": [2, 5, 3]}
+
+    assert '"type":"bar"' in Bar([1, 2, 3]).render()
+    assert '"type":"box"' in Box({"Group A": [1, 2]}).render()
+    assert '"type":"histogram"' in Hist(DataFrameLike()).render()
+    assert '"labels":["A","B"]' in Pie({"A": 1, "B": 2}).render()
 
 
 def test_infographic_renders_pages_with_horizontal_menu():

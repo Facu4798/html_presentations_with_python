@@ -74,6 +74,10 @@ def render_document(presentation):
       background: var(--panel);
       box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
     }
+    .plot-container {
+      width: 100%;
+      min-height: 240px;
+    }
     .table {
       width: 100%;
       border-collapse: collapse;

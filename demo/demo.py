@@ -1,6 +1,7 @@
 from html_presentations import Presentation, Slide
 from html_presentations.elements import Grid, Card, CodeBlock, Table
 from html_presentations.functions import h, p, b, i, code, link, ul, img
+from html_presentations.plots import Line
 
 presentation = (
     Presentation("demo/theme.css")
@@ -43,6 +44,13 @@ presentation = (
                     ["Code blocks", "OK"],
                 ],
             ),
+        )
+    )
+    .withSlide(
+        Slide().withContent(
+            h("Plotly Example", 2),
+            p("A line plot rendered from Python data with a reference line."),
+            Line([12, 18, 15, 24, 28]).addVLine(3).setTitle("Weekly values"),
         )
     )
 )
