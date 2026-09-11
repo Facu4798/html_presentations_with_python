@@ -21,7 +21,8 @@ python -m pip install -e https://github.com/Facu4798/html_presentations_with_pyt
 Import the package with:
 
 ```python
-from html_presentations import Presentation, Slide, h, p
+from html_presentations import Presentation, Slide
+from html_presentations.functions import h, p
 ```
 
 ## Basic Workflow
@@ -35,7 +36,8 @@ A presentation normally follows these steps:
 5. Save the presentation as an HTML file.
 
 ```python
-from html_presentations import Presentation, Slide, h, p
+from html_presentations import Presentation, Slide
+from html_presentations.functions import h, p
 
 presentation = (
     Presentation(title="My Presentation")
@@ -51,6 +53,25 @@ presentation.save("presentation.html")
 ```
 
 Open `presentation.html` in a browser. Slides are arranged horizontally. You can move between them with the left and right arrow keys, swipe on a touch device, or scroll horizontally.
+
+## Infographics
+
+Use `Infographic` when content should be organized into named pages instead of slides. Page names appear in a menu, and selecting a name displays that page.
+
+```python
+from html_presentations import Infographic, Page
+from html_presentations.functions import h, p
+
+infographic = (
+    Infographic(title="Project Overview", menu_orientation="vertical")
+    .withPage(Page("Summary").withContent(h("Summary", 1), p("Key findings.")))
+    .withPage(Page("Details").withContent(h("Details", 1), p("Supporting information.")))
+)
+
+infographic.save("infographic.html")
+```
+
+Set `menu_orientation` to `"horizontal"` or `"vertical"`. It defaults to `"horizontal"`. `orientation` is also accepted as an alias.
 
 ## Presentation
 
@@ -266,7 +287,7 @@ Image(src, alt="", css_class=None, alignment=None)
 - `alignment`: Optional `"left"`, `"center"`, or `"right"` alignment.
 
 ```python
-from html_presentations import Image
+from html_presentations.elements import Image
 
 Image(
     "images/chart.png",
@@ -317,7 +338,7 @@ h("Section title", 2, alignment="center")
 Adds custom HTML without escaping it. Each argument can be raw HTML or a path to an HTML fragment file. Multiple raw strings and file paths can be mixed in one call.
 
 ```python
-from html_presentations import html
+from html_presentations.functions import html
 
 custom_content = html(
     '<div class="notice">Inline content</div>',
@@ -415,7 +436,8 @@ An invalid alignment value raises `ValueError`.
 Elements can be nested to build richer slide content. Inline helpers are especially useful inside paragraphs.
 
 ```python
-from html_presentations import Slide, b, code, h, link, p
+from html_presentations import Slide
+from html_presentations.functions import b, code, h, link, p
 
 slide = Slide().withContent(
     h("Release checklist", 2),
@@ -459,18 +481,9 @@ A custom slide class can be added through `Slide(css_class="my-slide")` and styl
 ## Complete Example
 
 ```python
-from html_presentations import (
-    Card,
-    CodeBlock,
-    Grid,
-    Presentation,
-    Slide,
-    Table,
-    h,
-    img,
-    p,
-    ul,
-)
+from html_presentations import Presentation, Slide
+from html_presentations.elements import Card, CodeBlock, Grid, Table
+from html_presentations.functions import h, img, p, ul
 
 presentation = (
     Presentation(

@@ -1,15 +1,14 @@
+from .infographic import Infographic
+from .page import Page
 from .presentation import Presentation
 from .slide import Slide
-from .elements import Card, CodeBlock, Grid, Image, Table, b, code, h, html, i, img, link, ol, p, ul
+from .functions import b, code, h, html, i, img, link, ol, p, ul
 
 __all__ = [
     "Presentation",
     "Slide",
-    "Grid",
-    "Card",
-    "CodeBlock",
-    "Image",
-    "Table",
+    "Infographic",
+    "Page",
     "h",
     "html",
     "b",

@@ -1,13 +1,14 @@
 import pytest
 
-from html_presentations import (
+from html_presentations import Infographic, Page, Presentation, Slide
+from html_presentations.elements import (
     Card,
     CodeBlock,
     Grid,
     Image,
-    Presentation,
-    Slide,
     Table,
+)
+from html_presentations.functions import (
     b,
     code,
     h,
@@ -204,3 +205,39 @@ def test_add_script_accepts_mixed_raw_code_and_file_paths(tmp_path):
     assert "window.fromRaw = true;" in rendered
     assert "window.fromFile = true;" in rendered
     assert rendered.count("<script>") >= 3
+
+
+def test_infographic_renders_pages_with_horizontal_menu():
+    rendered = (
+        Infographic(title="Metrics")
+        .withPage(Page("Overview").withContent(h("Overview", 1)))
+        .withPage(Page("Details", id="details").withContent(p("More data")))
+        .to_html()
+    )
+
+    assert '<main class="infographic horizontal">' in rendered
+    assert '<nav class="infographic-menu"' in rendered
+    assert 'data-page-target="page-0"' in rendered
+    assert '>Overview</button>' in rendered
+    assert 'data-page-target="details"' in rendered
+    assert 'data-page-id="page-0"' in rendered
+    assert 'data-page-id="details"' in rendered
+    assert "showPage" in rendered
+
+
+def test_infographic_supports_vertical_menu_and_page_aliases():
+    rendered = (
+        Infographic(orientation="vertical")
+        .page(Page("First").withContent("One"))
+        .addPage(Page("Second").withContent("Two"))
+        .to_html()
+    )
+
+    assert '<main class="infographic vertical">' in rendered
+    assert '<section class="page" id="page-0" data-page-id="page-0">One</section>' in rendered
+    assert '<section class="page" id="page-1" data-page-id="page-1">Two</section>' in rendered
+
+
+def test_infographic_rejects_unknown_menu_orientation():
+    with pytest.raises(ValueError, match="Menu orientation must be"):
+        Infographic(menu_orientation="diagonal")

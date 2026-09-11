@@ -196,3 +196,215 @@ def render_document(presentation):
 </body>
 </html>
 """
+
+
+def render_infographic(infographic):
+    page_ids = [str(page.id) if page.id else f"page-{index}" for index, page in enumerate(infographic.pages)]
+    pages_html = "".join(
+      page.render(page_ids[index]).replace(
+        f'id="{escape(page_ids[index], quote=True)}"',
+        f'id="{escape(page_ids[index], quote=True)}" data-page-id="{escape(page_ids[index], quote=True)}"',
+        1,
+      )
+        for index, page in enumerate(infographic.pages)
+    )
+    menu_html = "".join(
+        f'<button type="button" class="page-link{" active" if index == 0 else ""}" '
+        f'data-page-target="{escape(page_ids[index], quote=True)}" '
+        f'aria-selected="{"true" if index == 0 else "false"}">{escape(page.name)}</button>'
+        for index, page in enumerate(infographic.pages)
+    )
+    custom_scripts = "".join(f"\n  <script>\n{script}\n  </script>" for script in infographic.scripts)
+
+    default_style = """
+    :root {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --border: #dfe7f5;
+      --accent: #2563eb;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .infographic {
+      display: flex;
+      min-height: 100vh;
+    }
+    .infographic.horizontal {
+      flex-direction: column;
+    }
+    .infographic-menu {
+      display: flex;
+      background: var(--panel);
+      border-color: var(--border);
+      border-style: solid;
+      gap: 4px;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+    .infographic.horizontal .infographic-menu {
+      flex-direction: row;
+      border-width: 0 0 1px;
+      overflow-x: auto;
+    }
+    .infographic.vertical .infographic-menu {
+      flex-direction: column;
+      flex: 0 0 220px;
+      border-width: 0 1px 0 0;
+    }
+    .page-link {
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      padding: 10px 14px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .page-link:hover,
+    .page-link.active {
+      background: #eef4ff;
+      color: var(--accent);
+    }
+    .infographic-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .page {
+      box-sizing: border-box;
+      display: none;
+      min-height: 100vh;
+      padding: 48px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+    .page.active {
+      display: block;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .grid-cell {
+      border: 1px solid var(--border);
+      padding: 16px;
+      background: var(--panel);
+      border-radius: 8px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--panel);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .table th, .table td {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .table th {
+      background: #eef4ff;
+    }
+    .code-block {
+      background: #111827;
+      color: #f9fafb;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    img.image {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    a { color: var(--accent); }
+    .align-left { text-align: left; }
+    .align-center { align-self: center; }
+    .align-right { text-align: right; }
+    @media (max-width: 640px) {
+      .infographic.vertical .infographic-menu {
+        flex-basis: 160px;
+      }
+      .page {
+        padding: 32px 20px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    """
+
+    if infographic.css_file:
+        try:
+            with open(infographic.css_file, "r", encoding="utf-8") as css:
+                style = default_style + "\n" + css.read()
+        except OSError:
+            style = default_style
+    else:
+        style = default_style
+
+    script = """
+    <script>
+      const pageLinks = Array.from(document.querySelectorAll('.page-link'));
+      const pages = Array.from(document.querySelectorAll('.page'));
+
+      function showPage(pageId) {
+        pages.forEach(function(page) {
+          page.classList.toggle('active', page.dataset.pageId === pageId);
+        });
+        pageLinks.forEach(function(link) {
+          const selected = link.dataset.pageTarget === pageId;
+          link.classList.toggle('active', selected);
+          link.setAttribute('aria-selected', selected ? 'true' : 'false');
+        });
+      }
+
+      pageLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          showPage(link.dataset.pageTarget);
+        });
+      });
+
+      if (pageLinks.length) showPage(pageLinks[0].dataset.pageTarget);
+    </script>
+    """
+
+    orientation = escape(infographic.menu_orientation, quote=True)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{escape(infographic.title)}</title>
+  <style>{style}</style>
+</head>
+<body>
+  <main class="infographic {orientation}">
+    <nav class="infographic-menu" aria-label="Infographic pages">
+      {menu_html}
+    </nav>
+    <div class="infographic-content">
+      {pages_html}
+    </div>
+  </main>
+  {script}
+  {custom_scripts}
+</body>
+</html>
+"""

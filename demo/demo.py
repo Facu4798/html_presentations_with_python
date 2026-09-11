@@ -1,7 +1,6 @@
-from html_presentations import (
-    Presentation, Slide, Grid, Card, CodeBlock,
-    h, p, b, i, code, link, ul, img, Table
-)
+from html_presentations import Presentation, Slide
+from html_presentations.elements import Grid, Card, CodeBlock, Table
+from html_presentations.functions import h, p, b, i, code, link, ul, img
 
 presentation = (
     Presentation("demo/theme.css")

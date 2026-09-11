@@ -285,7 +285,8 @@ Returns an anchor element with a display label and URL.
 ### 6.1 Minimal slide
 
 ```python
-from html_presentations import Presentation, Slide, h, b, link
+from html_presentations import Presentation, Slide
+from html_presentations.functions import h, b, link
 
 presentation = Presentation()
 presentation.withSlide(
@@ -302,7 +303,9 @@ html = presentation.to_html()
 ### 6.2 Chained builder styling
 
 ```python
-from html_presentations import Presentation, Slide, Grid, Card, CodeBlock, h, code
+from html_presentations import Presentation, Slide
+from html_presentations.elements import Grid, Card, CodeBlock
+from html_presentations.functions import h, code
 
 html = (
     Presentation()
@@ -439,15 +442,9 @@ Suggested policy:
 from html_presentations import (
     Presentation,
     Slide,
-    Grid,
-    Card,
-    CodeBlock,
-    h,
-    b,
-    i,
-    code,
-    link,
 )
+from html_presentations.elements import Grid, Card, CodeBlock
+from html_presentations.functions import h, b, i, code, link
 ```
 
 Common flow:

@@ -1,0 +1,74 @@
+:root {
+  --bg: #f3f7f2;
+  --panel: #ffffff;
+  --page: #fbfdf9;
+  --ink: #18312b;
+  --muted: #60736b;
+  --border: #d7e4db;
+  --accent: #0f766e;
+  --accent-soft: #dff3ed;
+  --accent-strong: #115e59;
+  --shadow: rgba(24, 49, 43, 0.1);
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.infographic {
+  background: linear-gradient(135deg, #eef8f0 0%, #f8fbf6 52%, #e9f4f2 100%);
+}
+
+.infographic-menu {
+  box-shadow: 0 4px 18px var(--shadow);
+  z-index: 1;
+}
+
+.page-link {
+  font-weight: 600;
+}
+
+.page-link:hover,
+.page-link.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.page {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(247, 252, 248, 0.9));
+  padding: clamp(2rem, 5vw, 5rem);
+}
+
+.page > h1 {
+  color: var(--accent-strong);
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+  letter-spacing: -0.04em;
+  margin-bottom: 0.8rem;
+}
+
+.page > p {
+  color: var(--muted);
+  max-width: 58rem;
+}
+
+.card,
+.grid-cell {
+  border-color: var(--border);
+  box-shadow: 0 12px 28px var(--shadow);
+}
+
+.card h2 {
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+.table {
+  box-shadow: 0 12px 28px var(--shadow);
+}
+
+.table th {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}

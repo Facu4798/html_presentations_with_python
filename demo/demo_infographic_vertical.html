@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Pulse Infographic</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --border: #dfe7f5;
+      --accent: #2563eb;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .infographic {
+      display: flex;
+      min-height: 100vh;
+    }
+    .infographic.horizontal {
+      flex-direction: column;
+    }
+    .infographic-menu {
+      display: flex;
+      background: var(--panel);
+      border-color: var(--border);
+      border-style: solid;
+      gap: 4px;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+    .infographic.horizontal .infographic-menu {
+      flex-direction: row;
+      border-width: 0 0 1px;
+      overflow-x: auto;
+    }
+    .infographic.vertical .infographic-menu {
+      flex-direction: column;
+      flex: 0 0 220px;
+      border-width: 0 1px 0 0;
+    }
+    .page-link {
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      padding: 10px 14px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .page-link:hover,
+    .page-link.active {
+      background: #eef4ff;
+      color: var(--accent);
+    }
+    .infographic-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .page {
+      box-sizing: border-box;
+      display: none;
+      min-height: 100vh;
+      padding: 48px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+    .page.active {
+      display: block;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .grid-cell {
+      border: 1px solid var(--border);
+      padding: 16px;
+      background: var(--panel);
+      border-radius: 8px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--panel);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .table th, .table td {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .table th {
+      background: #eef4ff;
+    }
+    .code-block {
+      background: #111827;
+      color: #f9fafb;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    img.image {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    a { color: var(--accent); }
+    .align-left { text-align: left; }
+    .align-center { align-self: center; }
+    .align-right { text-align: right; }
+    @media (max-width: 640px) {
+      .infographic.vertical .infographic-menu {
+        flex-basis: 160px;
+      }
+      .page {
+        padding: 32px 20px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+:root {
+  --bg: #f3f7f2;
+  --panel: #ffffff;
+  --page: #fbfdf9;
+  --ink: #18312b;
+  --muted: #60736b;
+  --border: #d7e4db;
+  --accent: #0f766e;
+  --accent-soft: #dff3ed;
+  --accent-strong: #115e59;
+  --shadow: rgba(24, 49, 43, 0.1);
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.infographic {
+  background: linear-gradient(135deg, #eef8f0 0%, #f8fbf6 52%, #e9f4f2 100%);
+}
+
+.infographic-menu {
+  box-shadow: 0 4px 18px var(--shadow);
+  z-index: 1;
+}
+
+.page-link {
+  font-weight: 600;
+}
+
+.page-link:hover,
+.page-link.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.page {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(247, 252, 248, 0.9));
+  padding: clamp(2rem, 5vw, 5rem);
+}
+
+.page > h1 {
+  color: var(--accent-strong);
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+  letter-spacing: -0.04em;
+  margin-bottom: 0.8rem;
+}
+
+.page > p {
+  color: var(--muted);
+  max-width: 58rem;
+}
+
+.card,
+.grid-cell {
+  border-color: var(--border);
+  box-shadow: 0 12px 28px var(--shadow);
+}
+
+.card h2 {
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+.table {
+  box-shadow: 0 12px 28px var(--shadow);
+}
+
+.table th {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+</style>
+</head>
+<body>
+  <main class="infographic vertical">
+    <nav class="infographic-menu" aria-label="Infographic pages">
+      <button type="button" class="page-link active" data-page-target="overview" aria-selected="true">Overview</button><button type="button" class="page-link" data-page-target="highlights" aria-selected="false">Highlights</button><button type="button" class="page-link" data-page-target="details" aria-selected="false">Details</button><button type="button" class="page-link" data-page-target="signal" aria-selected="false">Signal</button>
+    </nav>
+    <div class="infographic-content">
+      <section class="page" id="overview" data-page-id="overview"><h1>Product Pulse</h1><p>A compact view of what shipped, what changed, and where the team is headed.</p><div class="grid grid-3x1" style="grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(1, minmax(0, 1fr));"><div class="grid-cell"><div class="card"><h2>24</h2><p>features shipped</p></div></div><div class="grid-cell"><div class="card"><h2>91%</h2><p>weekly adoption</p></div></div><div class="grid-cell"><div class="card"><h2>4.8/5</h2><p>customer rating</p></div></div></div></section><section class="page" id="highlights" data-page-id="highlights"><h1>What changed</h1><p>The latest release focuses on a faster path from insight to action.</p><ul><li>Navigation is clearer across the core workflow.</li><li>Reports load faster on large datasets.</li><li>Teams can share decisions with a single link.</li></ul><p>Read the <strong>release notes</strong> or <a href="https://example.com">open the product tour</a>.</p></section><section class="page" id="details" data-page-id="details"><h1>Release details</h1><table class="table"><tr><th>Area</th><th>Status</th><th>Signal</th></tr><tr><td>Onboarding</td><td>Improved</td><td>+18% completion</td></tr><tr><td>Performance</td><td>Improved</td><td>-32% load time</td></tr><tr><td>Sharing</td><td>New</td><td>2.4k links created</td></tr></table><div class="grid grid-2x1" style="grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(1, minmax(0, 1fr));"><div class="grid-cell"><div class="card"><h3>Next up</h3><p>More flexible exports and saved views.</p></div></div><div class="grid-cell"><pre><code class="language-python">Infographic(menu_orientation="vertical")</code></pre></div></div></section><section class="page" id="signal" data-page-id="signal"><h1>The signal</h1><p>A page can contain the same reusable elements as a presentation slide.</p><img src="https://placehold.co/960x320/e8eefc/26324a?text=Product+Signal" alt="Product signal chart" class="image align-center" /><p><code>Page</code> objects keep the content model simple and composable.</p></section>
+    </div>
+  </main>
+  
+    <script>
+      const pageLinks = Array.from(document.querySelectorAll('.page-link'));
+      const pages = Array.from(document.querySelectorAll('.page'));
+
+      function showPage(pageId) {
+        pages.forEach(function(page) {
+          page.classList.toggle('active', page.dataset.pageId === pageId);
+        });
+        pageLinks.forEach(function(link) {
+          const selected = link.dataset.pageTarget === pageId;
+          link.classList.toggle('active', selected);
+          link.setAttribute('aria-selected', selected ? 'true' : 'false');
+        });
+      }
+
+      pageLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          showPage(link.dataset.pageTarget);
+        });
+      });
+
+      if (pageLinks.length) showPage(pageLinks[0].dataset.pageTarget);
+    </script>
+    
+  
+</body>
+</html>

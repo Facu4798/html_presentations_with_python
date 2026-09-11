@@ -25,7 +25,8 @@ The plain GitHub webpage URL cannot be passed directly to `pip`; it downloads an
 ## Quick Start
 
 ```python
-from html_presentations import Presentation, Slide, h, p
+from html_presentations import Presentation, Slide
+from html_presentations.functions import h, p
 
 presentation = (
 	Presentation()
