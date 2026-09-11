@@ -4,7 +4,7 @@ from html_presentations.functions import h, p, b, i, code, link, ul, img
 from html_presentations.plots import Line
 
 presentation = (
-    Presentation("demo/theme.css")
+    Presentation().applyTheme("default_dark")
     .withSlide(
         Slide("title-slide").withContent(
             h("Python-Powered Presentation Demo", 1),

@@ -52,6 +52,19 @@ presentation = (
 presentation.save("presentation.html")
 ```
 
+### Themes
+
+Presentations and infographics can use a packaged theme from the `themes/` folder. Theme names omit the `.css` suffix and return the same object for method chaining.
+
+```python
+presentation = Presentation().applyTheme("default_dark")
+infographic = Infographic().applyTheme("default_light")
+```
+
+The available built-in themes are `default_light` and `default_dark`. An unknown theme raises `ValueError`. If `css_file` is also provided, its rules are appended after the theme and take precedence.
+
+Themes can target the stable default classes emitted by the API: `.heading`, `.paragraph`, `.bold`, `.italic`, `.inline-code`, `.link`, `.unordered-list`, `.ordered-list`, `.list-item`, `.image`, `.card`, `.grid`, `.code-block`, `.table`, `.plot-container`, `.slide`, and `.page`. A custom `css_class` is appended alongside the default class. Raw HTML supplied through `html()` remains unchanged and is the exception because it does not create a library-owned element.
+
 Open `presentation.html` in a browser. Slides are arranged horizontally. You can move between them with the left and right arrow keys, swipe on a touch device, or scroll horizontally.
 
 ## Infographics

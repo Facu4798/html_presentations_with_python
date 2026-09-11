@@ -39,12 +39,12 @@ def test_paragraph_helper_and_slide_content_render():
         .to_html()
     )
 
-    assert "<h1>Title</h1>" in html
-    assert "<p>This is a paragraph.</p>" in html
-    assert "<strong>bold</strong>" in html
-    assert "<em>italic</em>" in html
-    assert "<code>print('hi')</code>" in html
-    assert '<a href="https://example.com">Docs</a>' in html
+    assert '<h1 class="heading">Title</h1>' in html
+    assert '<p class="paragraph">This is a paragraph.</p>' in html
+    assert '<strong class="bold">bold</strong>' in html
+    assert '<em class="italic">italic</em>' in html
+    assert '<code class="inline-code">print(\'hi\')</code>' in html
+    assert '<a class="link" href="https://example.com">Docs</a>' in html
 
 
 def test_grid_and_card_rendering():
@@ -64,8 +64,8 @@ def test_grid_and_card_rendering():
 
     assert '<div class="grid grid-2x2" style="grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr));">' in html
     assert "<div class=\"card\">" in html
-    assert "<p>First</p>" in html
-    assert "<pre><code class=\"language-python\">print('x')</code></pre>" in html
+    assert '<p class="paragraph">First</p>' in html
+    assert '<pre class="code-block"><code class="language-python">print(\'x\')</code></pre>' in html
     assert "Final" in html
 
 
@@ -78,12 +78,12 @@ def test_list_helpers_and_multiple_slides_render():
     )
 
     assert html.count("<section") == 2
-    assert "<ul>" in html
-    assert "<li>One</li>" in html
-    assert "<li>Three</li>" in html
-    assert "<ol>" in html
-    assert "<li>Alpha</li>" in html
-    assert "<li>Beta</li>" in html
+    assert '<ul class="unordered-list">' in html
+    assert '<li class="list-item">One</li>' in html
+    assert '<li class="list-item">Three</li>' in html
+    assert '<ol class="ordered-list">' in html
+    assert '<li class="list-item">Alpha</li>' in html
+    assert '<li class="list-item">Beta</li>' in html
 
 
 def test_image_and_table_support():
@@ -118,6 +118,24 @@ def test_default_css_theme_is_included():
     assert "overflow: hidden" in html
 
 
+def test_presentation_can_apply_a_packaged_theme():
+    presentation = Presentation().applyTheme("default_dark")
+
+    assert presentation.theme_name == "default_dark"
+    assert "--bg: #111827" in presentation.to_html()
+
+
+def test_infographic_can_apply_a_packaged_theme():
+    rendered = Infographic().applyTheme("default_dark.css").to_html()
+
+    assert "--bg: #111827" in rendered
+
+
+def test_apply_theme_rejects_unknown_theme():
+    with pytest.raises(ValueError, match="Unknown theme"):
+        Presentation().applyTheme("missing")
+
+
 def test_horizontal_slide_navigation_and_mobile_scroll_support():
     html = Presentation().withSlide(Slide()).withSlide(Slide()).to_html()
 
@@ -142,6 +160,24 @@ def test_custom_css_file_is_injected(tmp_path):
     assert "scroll-snap-type: x mandatory" in html
 
 
+def test_custom_css_takes_priority_over_presentation_theme(tmp_path):
+    css_file = tmp_path / "custom.css"
+    css_file.write_text(".heading { color: hotpink; }\n", encoding="utf-8")
+
+    rendered = Presentation(css_file=str(css_file)).applyTheme("default_dark").to_html()
+
+    assert rendered.index(".heading {\n\tcolor: var(--ink);") < rendered.index(".heading { color: hotpink; }")
+
+
+def test_custom_css_takes_priority_over_infographic_theme(tmp_path):
+    css_file = tmp_path / "custom.css"
+    css_file.write_text(".heading { color: hotpink; }\n", encoding="utf-8")
+
+    rendered = Infographic(css_file=str(css_file)).applyTheme("default_light").to_html()
+
+    assert rendered.index(".heading {\n\tcolor: var(--ink);") < rendered.index(".heading { color: hotpink; }")
+
+
 def test_inline_helpers_accept_nested_content():
     html = (
         Presentation()
@@ -153,8 +189,8 @@ def test_inline_helpers_accept_nested_content():
         .to_html()
     )
 
-    assert "Start <strong>bold</strong> and <em>italic</em>" in html
-    assert '<a href="https://example.com">docs</a>' in html
+    assert 'Start <strong class="bold">bold</strong> and <em class="italic">italic</em>' in html
+    assert '<a class="link" href="https://example.com">docs</a>' in html
 
 
 def test_alignment_is_supported_by_helpers_and_containers():
@@ -173,8 +209,8 @@ def test_alignment_is_supported_by_helpers_and_containers():
     )
 
     assert '<section class="slide align-center">' in html
-    assert '<h1 class="align-center">Centered</h1>' in html
-    assert '<p class="align-right">Right aligned</p>' in html
+    assert '<h1 class="heading align-center">Centered</h1>' in html
+    assert '<p class="paragraph align-right">Right aligned</p>' in html
     assert '<div class="card align-left">Card</div>' in html
     assert 'class="grid grid-2x2 align-center"' in html
     assert 'class="image align-right"' in html
@@ -183,6 +219,51 @@ def test_alignment_is_supported_by_helpers_and_containers():
 def test_alignment_rejects_unknown_values():
     with pytest.raises(ValueError, match="Alignment must be"):
         p("Invalid", alignment="justify")
+
+
+def test_renderable_helpers_and_elements_have_themeable_default_classes():
+    rendered = Presentation().withSlide(
+        Slide().withContent(
+            h("Heading"),
+            p("Paragraph"),
+            b("Bold"),
+            i("Italic"),
+            code("Code"),
+            link("Link", "/link"),
+            ul(["Unordered"]),
+            ol(["Ordered"]),
+            img("/image.png"),
+            Card().withContent("Card"),
+            Grid(1, 1),
+            CodeBlock().withContent("Block"),
+            Table(),
+            Line([1, 2]),
+        )
+    ).to_html()
+
+    for css_class in (
+        "heading",
+        "paragraph",
+        "bold",
+        "italic",
+        "inline-code",
+        "link",
+        "unordered-list",
+        "ordered-list",
+        "list-item",
+        "image",
+        "card",
+        "grid",
+        "code-block",
+        "table",
+        "plot-container",
+    ):
+        assert f'class="{css_class}' in rendered
+
+
+def test_custom_element_classes_are_additive():
+    assert 'class="card custom"' in Card(css_class="custom").render()
+    assert 'class="grid custom grid-1x1"' in Grid(css_class="custom").render()
 
 
 def test_html_helper_accepts_raw_html_and_file_paths(tmp_path):

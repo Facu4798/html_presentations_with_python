@@ -6,10 +6,9 @@ from html_presentations.functions import b, code, h, img, link, p, ul
 def build_infographic(menu_orientation):
     return (
         Infographic(
-            css_file="demo/infographic_theme.css",
             title="Product Pulse Infographic",
             menu_orientation=menu_orientation,
-        )
+        ).applyTheme("default_light")
         .withPage(
             Page("Overview", id="overview").withContent(
                 h("Product Pulse", 1),

@@ -22,5 +22,8 @@ classifiers = [
 [tool.setuptools.packages.find]
 include = ["html_presentations*"]
 
+[tool.setuptools.package-data]
+html_presentations = ["themes/*.css"]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]

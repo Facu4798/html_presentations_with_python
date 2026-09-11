@@ -1,0 +1,74 @@
+:root {
+	--bg: #f4f6fb;
+	--panel: #ffffff;
+	--ink: #1f2937;
+	--muted: #6b7280;
+	--border: #dfe7f5;
+	--accent: #2563eb;
+	--accent-soft: #eef4ff;
+	--page-bg: #ffffff;
+	--page-gradient: linear-gradient(180deg, #ffffff, #f8fafc);
+	--table-header: #eef4ff;
+	--code-bg: #111827;
+	--code-ink: #f9fafb;
+	--card-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+.slide,
+.page {
+	color: var(--ink);
+}
+
+.heading {
+	color: var(--ink);
+}
+
+.paragraph,
+.list-item {
+	color: var(--ink);
+}
+
+.bold {
+	font-weight: 700;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.inline-code {
+	background: var(--code-bg);
+	color: var(--code-ink);
+	padding: 0.1em 0.3em;
+	border-radius: 3px;
+}
+
+.link {
+	color: var(--accent);
+}
+
+.unordered-list,
+.ordered-list {
+	color: var(--ink);
+}
+
+.card,
+.grid-cell,
+.table {
+	background: var(--panel);
+	border-color: var(--border);
+}
+
+.plot-container {
+	color: var(--ink);
+}
+
+.page-link {
+	color: var(--muted);
+}
+
+.page-link:hover,
+.page-link.active {
+	background: var(--accent-soft);
+	color: var(--accent);
+}

@@ -10,10 +10,19 @@ class Infographic:
             raise ValueError("Menu orientation must be 'horizontal' or 'vertical'")
 
         self.css_file = css_file
+        self.theme_name = "default_light"
         self.title = title
         self.menu_orientation = menu_orientation
         self.pages = []
         self.scripts = []
+
+    def applyTheme(self, theme_name):
+        from .themes import read_theme
+
+        normalized_name = str(theme_name).strip().removesuffix(".css")
+        read_theme(normalized_name)
+        self.theme_name = normalized_name
+        return self
 
     def withPage(self, page):
         self.pages.append(page)

@@ -32,7 +32,7 @@ class Plot(Element):
     plot_type = "scatter"
 
     def __init__(self, data=None, css_class=None, alignment=None, width=None, height=360, **kwargs):
-        super().__init__("div", css_class=css_class or "plot-container", alignment=alignment)
+        super().__init__("div", css_class=css_class, alignment=alignment, default_css_class="plot-container")
         self.plot_id = f"plot-{next(_PLOT_IDS)}"
         self.width = width
         self.height = height

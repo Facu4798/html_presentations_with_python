@@ -21,17 +21,18 @@ def _read_raw_or_file(value):
 
 
 class Element:
-    def __init__(self, tag, content=None, css_class=None, attrs=None, alignment=None):
+    def __init__(self, tag, content=None, css_class=None, attrs=None, alignment=None, default_css_class=None):
         self.tag = tag
         self.content = [] if content is None else self._normalize_content(content)
         self.css_class = css_class
+        self.default_css_class = default_css_class or tag
         self.attrs = attrs or {}
         self.alignment = _validate_alignment(alignment)
 
     def _render_class(self):
-        classes = []
+        classes = [self.default_css_class]
         if self.css_class:
-            classes.append(self.css_class)
+            classes.extend(css_class for css_class in self.css_class.split() if css_class not in classes)
         if self.alignment:
             classes.append(f"align-{self.alignment}")
         return " ".join(classes)
@@ -92,7 +93,7 @@ class RawHTML(Element):
 
 class Card(Element):
     def __init__(self, css_class=None, alignment=None):
-        super().__init__("div", css_class=css_class or "card", alignment=alignment)
+        super().__init__("div", css_class=css_class, alignment=alignment, default_css_class="card")
 
 
 class Grid(Element):
@@ -103,8 +104,9 @@ class Grid(Element):
         super().__init__(
             "div",
             content=content,
-            css_class=(css_class or "grid") + f" grid-{self.horizontal}x{self.vertical}",
+            css_class=css_class,
             alignment=alignment,
+            default_css_class="grid",
         )
 
     def withCell(self, row, col, content):
@@ -115,8 +117,15 @@ class Grid(Element):
         self.vertical = new_rows
         self.horizontal = new_cols
         self.cells[(row, col)] = content
-        self.css_class = "grid" + f" grid-{self.horizontal}x{self.vertical}"
         return self
+
+    def _render_class(self):
+        classes = super()._render_class().split()
+        alignment_class = classes.pop() if classes[-1].startswith("align-") else None
+        classes.append(f"grid-{self.horizontal}x{self.vertical}")
+        if alignment_class:
+            classes.append(alignment_class)
+        return " ".join(classes)
 
     def addCell(self, row, col, content):
         return self.withCell(row, col, content)
@@ -140,7 +149,7 @@ class Grid(Element):
 class CodeBlock(Element):
     def __init__(self, language="python", css_class=None, alignment=None):
         self.language = language
-        super().__init__("pre", css_class=css_class or "code-block", alignment=alignment)
+        super().__init__("pre", css_class=css_class, alignment=alignment, default_css_class="code-block")
         self.attrs = {"class": "language-" + language}
 
     def withContent(self, code_text):
@@ -152,7 +161,7 @@ class CodeBlock(Element):
 
     def render(self):
         code = self._render_child(self.content[0]) if self.content else ""
-        class_attr = f' class="{escape(self._render_class(), quote=True)}"' if self.alignment else ""
+        class_attr = f' class="{escape(self._render_class(), quote=True)}"'
         return (
             f'<pre{class_attr}>'
             f'<code class="language-{escape(self.language, quote=True)}">{code}</code></pre>'
@@ -163,7 +172,7 @@ class Image(Element):
     def __init__(self, src, alt="", css_class=None, alignment=None):
         self.src = src
         self.alt = alt
-        super().__init__("img", css_class=css_class or "image", alignment=alignment)
+        super().__init__("img", css_class=css_class, alignment=alignment, default_css_class="image")
         self.attrs = {"src": src, "alt": alt}
 
     def render(self):
@@ -178,7 +187,7 @@ class Table(Element):
     def __init__(self, headers=None, rows=None, css_class=None, alignment=None):
         self.headers = headers or []
         self.rows = rows or []
-        super().__init__("table", css_class=css_class or "table", alignment=alignment)
+        super().__init__("table", css_class=css_class, alignment=alignment, default_css_class="table")
 
     def render(self):
         header_html = ""

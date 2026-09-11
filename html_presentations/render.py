@@ -1,5 +1,7 @@
 from html import escape
 
+from .themes import read_theme
+
 
 def render_node(node):
     if node is None:
@@ -23,6 +25,12 @@ def render_document(presentation):
       --muted: #6b7280;
       --border: #dfe7f5;
       --accent: #2563eb;
+      --accent-soft: #eef4ff;
+      --page-gradient: linear-gradient(180deg, #ffffff, #f8fafc);
+      --table-header: #eef4ff;
+      --code-bg: #111827;
+      --code-ink: #f9fafb;
+      --card-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
     }
     body {
       font-family: Arial, sans-serif;
@@ -54,7 +62,7 @@ def render_document(presentation):
       padding: 48px;
       overflow: hidden;
       scroll-snap-align: start;
-      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      background: var(--page-gradient);
     }
     .grid {
       display: grid;
@@ -72,7 +80,7 @@ def render_document(presentation):
       border-radius: 8px;
       padding: 16px;
       background: var(--panel);
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+      box-shadow: var(--card-shadow);
     }
     .plot-container {
       width: 100%;
@@ -92,11 +100,11 @@ def render_document(presentation):
       text-align: left;
     }
     .table th {
-      background: #eef4ff;
+      background: var(--table-header);
     }
     .code-block {
-      background: #111827;
-      color: #f9fafb;
+      background: var(--code-bg);
+      color: var(--code-ink);
       padding: 16px;
       border-radius: 8px;
       overflow-x: auto;
@@ -122,15 +130,16 @@ def render_document(presentation):
     }
     """
 
+    theme_css = read_theme(presentation.theme_name)
     if presentation.css_file:
-        try:
-            with open(presentation.css_file, "r", encoding="utf-8") as css:
-                custom_css = css.read()
-                style = default_style + "\n" + custom_css
-        except OSError:
-            style = default_style
+      try:
+        with open(presentation.css_file, "r", encoding="utf-8") as css:
+          custom_css = css.read()
+          style = default_style + "\n" + theme_css + "\n" + custom_css
+      except OSError:
+        style = default_style + "\n" + theme_css
     else:
-        style = default_style
+      style = default_style + "\n" + theme_css
 
     script = """
     <script>
@@ -228,6 +237,12 @@ def render_infographic(infographic):
       --muted: #6b7280;
       --border: #dfe7f5;
       --accent: #2563eb;
+      --accent-soft: #eef4ff;
+      --page-gradient: linear-gradient(180deg, #ffffff, #f8fafc);
+      --table-header: #eef4ff;
+      --code-bg: #111827;
+      --code-ink: #f9fafb;
+      --card-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
     }
     body {
       font-family: Arial, sans-serif;
@@ -274,7 +289,7 @@ def render_infographic(infographic):
     }
     .page-link:hover,
     .page-link.active {
-      background: #eef4ff;
+      background: var(--accent-soft);
       color: var(--accent);
     }
     .infographic-content {
@@ -286,7 +301,7 @@ def render_infographic(infographic):
       display: none;
       min-height: 100vh;
       padding: 48px;
-      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      background: var(--page-gradient);
     }
     .page.active {
       display: block;
@@ -307,7 +322,7 @@ def render_infographic(infographic):
       border-radius: 8px;
       padding: 16px;
       background: var(--panel);
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+      box-shadow: var(--card-shadow);
     }
     .table {
       width: 100%;
@@ -323,11 +338,11 @@ def render_infographic(infographic):
       text-align: left;
     }
     .table th {
-      background: #eef4ff;
+      background: var(--table-header);
     }
     .code-block {
-      background: #111827;
-      color: #f9fafb;
+      background: var(--code-bg);
+      color: var(--code-ink);
       padding: 16px;
       border-radius: 8px;
       overflow-x: auto;
@@ -354,14 +369,15 @@ def render_infographic(infographic):
     }
     """
 
+    theme_css = read_theme(infographic.theme_name)
     if infographic.css_file:
         try:
             with open(infographic.css_file, "r", encoding="utf-8") as css:
-                style = default_style + "\n" + css.read()
+                style = default_style + "\n" + theme_css + "\n" + css.read()
         except OSError:
-            style = default_style
+            style = default_style + "\n" + theme_css
     else:
-        style = default_style
+        style = default_style + "\n" + theme_css
 
     script = """
     <script>
